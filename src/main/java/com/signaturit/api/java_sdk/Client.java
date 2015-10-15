@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
@@ -90,7 +92,7 @@ public class Client {
 	 * @return 
 	 * @throws UnirestException
 	 */
-	public String getAccount() throws UnirestException 
+	public HttpResponse<JsonNode> getAccount() throws UnirestException 
 	{
 		return RequestHelper.requestGet(this.url + "account.json");
 	}
@@ -101,7 +103,7 @@ public class Client {
 	 * @return 
 	 * @throws UnirestException
 	 */
-	public String getSignature(String signatureId) throws UnirestException 
+	public HttpResponse<JsonNode> getSignature(String signatureId) throws UnirestException 
 	{
 		String route = (
 			String.format("signs/%s.json", signatureId)
@@ -118,7 +120,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getSignatures(int limit, int offset, Map<String, Object> parameters) throws UnirestException 
+	public HttpResponse<JsonNode> getSignatures(int limit, int offset, Map<String, Object> parameters) throws UnirestException 
 	{
 		String route = String.format("signs.json?limit=%d&offset=%d", limit, offset);
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
@@ -132,7 +134,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String countSignatures(Map<String, Object> parameters) throws UnirestException 
+	public HttpResponse<JsonNode> countSignatures(Map<String, Object> parameters) throws UnirestException 
 	{
 		String route = RequestHelper.putGetParamsToUrl("signs/count.json?", parameters);
 		
@@ -146,7 +148,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getSignatureDocument(String signatureId, String documentId) throws UnirestException
+	public HttpResponse<JsonNode> getSignatureDocument(String signatureId, String documentId) throws UnirestException
 	{
 		String route = (
 			String.format("signs/%s/documents/%s.json", signatureId, documentId)
@@ -161,7 +163,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getSignatureDocuments(String signatureId) throws UnirestException
+	public HttpResponse<JsonNode> getSignatureDocuments(String signatureId) throws UnirestException
 	{
 		String route = (
 			String.format("signs/%s/documents.json", signatureId)
@@ -215,7 +217,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String createSignature(
+	public HttpResponse<JsonNode> createSignature(
 		ArrayList<String> files,
 		ArrayList<HashMap<String, Object>> recipients,
 		Map<String, Object> parameters
@@ -236,7 +238,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String cancelSignature(String signatureId) throws UnirestException
+	public HttpResponse<JsonNode> cancelSignature(String signatureId) throws UnirestException
 	{
 		String route = String.format(
 			"signs/%s/cancel.json", signatureId
@@ -252,7 +254,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String sendSignatureReminder(String signatureId, String documentId) throws UnirestException
+	public HttpResponse<JsonNode> sendSignatureReminder(String signatureId, String documentId) throws UnirestException
 	{
 		String route = String.format(
 			"signs/%s/documents/%s/reminder.json", signatureId, documentId
@@ -266,7 +268,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getBranding(String brandingId) throws UnirestException
+	public HttpResponse<JsonNode> getBranding(String brandingId) throws UnirestException
 	{
 		String route = String.format(
 			"brandings/%s.json", brandingId
@@ -279,7 +281,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getBrandings() throws UnirestException
+	public HttpResponse<JsonNode> getBrandings() throws UnirestException
 	{
 		String route = "brandings.json";
 		
@@ -292,7 +294,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String createBranding(HashMap<String, Object> parameters) throws UnirestException
+	public HttpResponse<JsonNode> createBranding(HashMap<String, Object> parameters) throws UnirestException
 	{
 		String route = "brandings.json";
 		return RequestHelper.requestPost(this.url + route, parameters, null);
@@ -305,7 +307,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String updateBranding(String brandingId, HashMap<String, Object> parameters) 
+	public HttpResponse<JsonNode> updateBranding(String brandingId, HashMap<String, Object> parameters) 
 		throws UnirestException
 	{
 		String route = String.format(
@@ -333,7 +335,7 @@ public class Client {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	public String updateBrandingLogo(String brandingId, String filePath) 
+	public HttpResponse<JsonNode> updateBrandingLogo(String brandingId, String filePath) 
 		throws UnirestException, URISyntaxException, IOException
 	{
 		String route = String.format(
@@ -353,7 +355,7 @@ public class Client {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	public String updateBrandingEmail(String brandingId, String template, String filePath) 
+	public HttpResponse<JsonNode> updateBrandingEmail(String brandingId, String template, String filePath) 
 		throws UnirestException, URISyntaxException, IOException
 	{
 		
@@ -371,7 +373,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getTemplates(int limit, int offset) throws UnirestException
+	public HttpResponse<JsonNode> getTemplates(int limit, int offset) throws UnirestException
 	{
 		String route = String.format(
 			"templates.json?limit=%s&offset=%s", limit, offset
@@ -388,7 +390,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getEmails(int limit, int offset, Map<String, Object> parameters) 
+	public HttpResponse<JsonNode> getEmails(int limit, int offset, Map<String, Object> parameters) 
 		throws UnirestException 
 	{
 		String route = String.format(
@@ -404,7 +406,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String countEmails(Map<String, Object> parameters) 
+	public HttpResponse<JsonNode> countEmails(Map<String, Object> parameters) 
 		throws UnirestException
 	{
 		String route = "emails/count.json?";
@@ -418,7 +420,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getEmail(String emailId) throws UnirestException
+	public HttpResponse<JsonNode> getEmail(String emailId) throws UnirestException
 	{
 		String route = String.format(
 			"emails/%s.json", emailId
@@ -433,7 +435,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getEmailCertificates(String emailId) 
+	public HttpResponse<JsonNode> getEmailCertificates(String emailId) 
 		throws UnirestException
 	{
 		String route = String.format(
@@ -450,7 +452,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String getEmailCertificate(String emailId, String certificateId)
+	public HttpResponse<JsonNode> getEmailCertificate(String emailId, String certificateId)
 		throws UnirestException
 	{
 		String route = String.format(
@@ -504,7 +506,7 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public String createEmail(
+	public HttpResponse<JsonNode> createEmail(
 		ArrayList<String> files, ArrayList<HashMap<String, Object>> recipients, 
 		String subject, String body, HashMap<String, Object> parameters
 	) throws UnirestException

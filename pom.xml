@@ -13,8 +13,8 @@
 	
 	<developers>
 	   <developer>
-	     <name>Oriac Perez</name>
-	     <email>oriac.perez@signaturit.com</email>
+	     <name>Signaturit team</name>
+	     <email>api@signaturit.com</email>
 	     <organization>Signaturit</organization>
 	     <organizationUrl>https://signaturit.com</organizationUrl>
 	   </developer>
@@ -81,11 +81,6 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-	<!-- <build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
-		<artifactId>maven-shade-plugin</artifactId> <executions> <execution> <phase>package</phase> 
-		<goals> <goal>shade</goal> </goals> </execution> </executions> <configuration> 
-		<finalName>uber-${project.artifactId}-${project.version}</finalName> </configuration> 
-		</plugin> </plugins> </build> -->
 	<build>
 		<plugins>
 			<plugin>

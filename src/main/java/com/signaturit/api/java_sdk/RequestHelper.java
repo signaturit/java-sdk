@@ -121,7 +121,7 @@ public class RequestHelper {
 	 * @return
 	 * @throws UnirestException
 	 */
-	protected static String requestPost(String route, Map<String, Object> parameters, ArrayList<String> files) throws UnirestException 
+	protected static HttpResponse<JsonNode> requestPost(String route, Map<String, Object> parameters, ArrayList<String> files) throws UnirestException 
 	{
 		MultipartBody request = Unirest.post(route)
 				.fields(parameters);
@@ -132,7 +132,7 @@ public class RequestHelper {
 			}
 		}
 		
-		return request.asString().getBody().toString();
+		return request.asJson();
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public class RequestHelper {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	protected static String requestPut(String route, Map<String, Object> parameters, String file) throws UnirestException, URISyntaxException, IOException 
+	protected static HttpResponse<JsonNode> requestPut(String route, Map<String, Object> parameters, String file) throws UnirestException, URISyntaxException, IOException 
 	{
 		
 		final InputStream stream = new FileInputStream(file);
@@ -156,7 +156,7 @@ public class RequestHelper {
 			.body(bytes)
 			.asJson();
 		
-		return jsonResponse.getBody().toString();
+		return jsonResponse;
 	}
 	
 	/**
@@ -165,13 +165,12 @@ public class RequestHelper {
 	 * @return
 	 * @throws UnirestException
 	 */
-	protected static String requestGet(String route) throws UnirestException 
+	protected static HttpResponse<JsonNode> requestGet(String route) throws UnirestException 
 	{
 		HttpResponse<JsonNode> jsonResponse = Unirest.get(route)
 				.asJson();
 		
-		return jsonResponse.getBody()
-				.toString();
+		return jsonResponse;
 	}
 	
 	/**
@@ -194,12 +193,12 @@ public class RequestHelper {
 	 * @return
 	 * @throws UnirestException
 	 */
-	protected static String requestPatch(String route, HashMap<String, Object> parameters) throws UnirestException {
+	protected static HttpResponse<JsonNode> requestPatch(String route, HashMap<String, Object> parameters) throws UnirestException {
 		HttpResponse<JsonNode> jsonResponse = Unirest.patch(route)
 			.fields(parameters)
 			.asJson();
 		
-		return jsonResponse.getBody().toString();
+		return jsonResponse;
 	}
 
 	
