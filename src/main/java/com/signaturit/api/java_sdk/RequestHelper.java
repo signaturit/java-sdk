@@ -2,10 +2,8 @@ package com.signaturit.api.java_sdk;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,45 +20,6 @@ public class RequestHelper {
 
 	/**
 	 * 
-	 * @param inputStream
-	 * @param path
-	 */
-	protected static void writeToPath(InputStream inputStream, String path) 
-	{
-		OutputStream outputStream = null;
-		
-		try {
-			outputStream = new FileOutputStream(new File(path));
-			int read = 0;
-			byte[] bytes = new byte[1024];
-
-			while ((read = inputStream.read(bytes)) != -1) {
-				outputStream.write(bytes, 0, read);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (outputStream != null) {
-				try {
-
-					outputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-			}
-		}
-	}
-
-	/**
-	 * 
 	 * @param route
 	 * @param parameters
 	 * @return
@@ -69,17 +28,6 @@ public class RequestHelper {
 	{
 		if (parameters != null) {
 			for (Entry<String, Object>  entry : parameters.entrySet()) {
-			    if (entry.getKey().equals("data")) {
-			    	Map<String, Object> map = (Map<String, Object>) entry.getValue();
-			    	
-			    	for(Entry<String, Object> valueEntry : map.entrySet()) {
-			    		route += String.format(
-			    			"&data[%s]=%s", valueEntry.getKey(), valueEntry.getValue()
-			    		);
-			    	}
-			    	continue;
-			    }
-			    
 			    if (entry.getKey().equals("ids")) {
 			    	String.join(",", (CharSequence[]) entry.getValue());
 			    }
@@ -98,18 +46,36 @@ public class RequestHelper {
 	 * @param recipients
 	 * @param key
 	 */
-	protected static void parseParameters(Map<String, Object> parameters, ArrayList<HashMap<String, Object>> recipients, String key) {
-		int i = 0;
-		for ( HashMap<String, Object> recipient: recipients ) {
-			for (Entry<String, Object>  entry : recipient.entrySet()) {
-				
-				if (key.equals("recipients")) {
-					parameters.put(key+"["+i+"]["+entry.getKey()+"]", entry.getValue());
+	protected static void parseParameters(Map<String, Object> parameters, Object recipients, String key) {
+		
+		if (!(recipients instanceof ArrayList || recipients instanceof HashMap)) {
+			parameters.put(key, recipients);
+		} else if (recipients instanceof ArrayList<?>) {
+			int i = 0;
+			for ( HashMap<String, Object> recipient: (ArrayList<HashMap<String, Object>>) recipients ) {
+				for (Entry<String, Object>  entry : recipient.entrySet()) {
+					
+					if (entry.getValue() instanceof ArrayList<?> || entry.getValue() instanceof HashMap) {
+						parseParameters(parameters, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
+					} else if (entry.getValue() instanceof HashMap) {
+						parseParameters(parameters, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
+						parameters.put(key+"["+i+"]["+entry.getKey()+"]", entry.getValue());
+					} else {
+						parseParameters(parameters, entry.getValue(), key+"["+entry.getKey()+"]");
+					}
+				}
+				++i;
+			}
+		} else if (recipients instanceof HashMap) {
+			for (Entry<String, Object> entry: ((Map<String, Object>) recipients).entrySet()) {
+				if (entry.getValue() instanceof ArrayList<?> || entry.getValue() instanceof HashMap) {
+					parseParameters(parameters, entry.getValue(), key+"["+entry.getKey()+"]");
+				} else if (entry.getValue() instanceof HashMap) {
+					parseParameters(parameters, entry.getValue(), key+"["+entry.getKey()+"]");
 				} else {
-					parameters.put(key+"["+entry.getKey()+"]", entry.getValue());
+					parseParameters(parameters, entry.getValue(), key+"["+entry.getKey()+"]");
 				}
 			}
-			++i;
 		}
 	}
 	
@@ -200,6 +166,4 @@ public class RequestHelper {
 		
 		return jsonResponse;
 	}
-
-	
 }

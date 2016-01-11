@@ -1,3 +1,7 @@
+============================================================
+DO NOT USE THIS CODE ON PRODUCTION UNTIL NEW RELEASE IS DONE
+============================================================
+
 Signaturit JAVA SDK
 =====================
 This package is a JAVA wrapper around the Signaturit API. If you didn't read the documentation yet, maybe it's time to take a look [here](http://docs.signaturit.com/).
@@ -14,7 +18,7 @@ Add the dependencies to you pom.xml :
 		<dependency>
 			<groupId>com.signaturit.java_sdk</groupId>
 			<artifactId>java-sdk</artifactId>
-			<version>0.0.1</version>
+			<version>1.0.0</version>
 		</dependency>
 ```
 Then import the library and instantiate the
@@ -74,22 +78,6 @@ Get the information regarding a single signature request passing its ID.
 response = client.getSignature("signatureId");
 ```
 
-### Get signature documents
-
-Get all documents from a signature request.
-
-```java
-response = client.getSignatureDocuments("signatureId");
-```
-
-### Get signature document
-
-Get a single document from a signature request.
-
-```java
-response = client.getSignatureDocument("signatureId", 'documentId');
-```
-
 ###  Signature request
 
 Create a new signature request. Check all available [options](http://docs.signaturit.com/api/#sign_create_sign).
@@ -140,7 +128,7 @@ response = client.sendSignatureReminder("signatureId", "documentId");
 Get the audit trail of a signature request document and save it locally.
 
 ```java
-response = client.downloadAuditTrail("signatureId", "documentId","outPutfilePath");
+response = client.downloadAuditTrail("signatureId", "documentId");
 ```
 
 ### Get signed document
@@ -148,7 +136,7 @@ response = client.downloadAuditTrail("signatureId", "documentId","outPutfilePath
 Get the signed document of a signature request document and save it locally.
 
 ```java
-response = client.downloadSignedDocument("signatureId", "documentId","outPutfilePath");
+response = client.downloadSignedDocument("signatureId", "documentId");
 ```
 
 ## Account
@@ -204,15 +192,6 @@ Update a single branding.
 response = $client.updateBranding("brandingId", options);
 ```
 
-### Update branding logo
-
-Change the branding logo.
-
-```java
-String filePath = "/logos/youLogo.png";
-response = client.updateBrandingLogo("brandingId", filePath);
-```
-
 ### Update branding email
 
 Change a email. Learn more about the emails [here](http://docs.signaturit.com/api/#put_template_branding).
@@ -243,15 +222,11 @@ response = client.getTemplates(limit, offset);
 
 ####Get all certified emails
 
-Retrieve all (delimited by limit and offset) certified emails data.
+Retrieve all (delimited by limit and offset and filters) certified emails data.
 Is possible to navigate usign limit and ofsset and send filters.
 
-### Count emails
-
-Count all certified emails. Send null for no filters.
-
 ```java
-response = client.countEmails(filters);
+response = client.getEmails(limit, offset, options)
 ```
 
 ### Get email
@@ -262,20 +237,12 @@ Get a single email
 response = client.getEmail('emailId');
 ```
 
-### Get email certificates
+### Count emails
 
-Get a single email certificates
-
-```java
-response = client.getEmailCertificates('emailId');
-```
-
-### Get email certificate
-
-Get a single email certificate
+Count all certified emails. Send null for no filters.
 
 ```java
-response = client.getEmailCertificate('emailId', 'certificateId');
+response = client.countEmails(filters);
 ```
 
 ### Create email
@@ -289,22 +256,10 @@ client.createEmail(filesToEmail, recipients, "subject", "body", options);
 
 ```
 
-### Get original file
-
-Get the original document of an email request and save it in the submitted path.
-
-```java
-response = client.downloadEmailOriginalFile(
-    "emailId","certificateId","/path/originalFile.pdf"
-);
-```
-
 ### Get audit trail document
 
 Get the audit trail document of an email request and save it in the submitted path.
 
 ```java
-response = client.downloadEmailAuditTrail(
-    "emailId","certificateId","/path/auditTrail.pdf"
-);
+response = client.downloadEmailAuditTrail("emailId","certificateId");
 ```

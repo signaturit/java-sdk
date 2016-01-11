@@ -10,24 +10,24 @@
 	<name>java-sdk</name>
 	<url>https://www.signaturit.com/</url>
 	<description>This project is a JAVA wrapper around the Signaturit API.</description>
-	
+
 	<developers>
-	   <developer>
-	     <name>Signaturit team</name>
-	     <email>api@signaturit.com</email>
-	     <organization>Signaturit</organization>
-	     <organizationUrl>https://signaturit.com</organizationUrl>
-	   </developer>
-	 </developers>
-	
+		<developer>
+			<name>Signaturit team</name>
+			<email>api@signaturit.com</email>
+			<organization>Signaturit</organization>
+			<organizationUrl>https://signaturit.com</organizationUrl>
+		</developer>
+	</developers>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<scm>
-	  <connection>scm:git:git@github.com:signaturit/java-sdk.git</connection>
-	  <developerConnection>scm:git:git@github.com:signaturit/java-sdk.git</developerConnection>
-	  <url>git@github.com:signaturit/java-sdk.git</url>
+		<connection>scm:git:git@github.com:signaturit/java-sdk.git</connection>
+		<developerConnection>scm:git:git@github.com:signaturit/java-sdk.git</developerConnection>
+		<url>git@github.com:signaturit/java-sdk.git</url>
 	</scm>
 
 	<licenses>
@@ -119,6 +119,22 @@
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
 				</configuration>
 			</plugin>
 			<plugin>
