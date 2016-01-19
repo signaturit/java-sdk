@@ -224,7 +224,7 @@ public class Client {
 	public HttpResponse<JsonNode> sendSignatureReminder(String signatureId, String documentId) throws UnirestException
 	{
 		String route = String.format(
-			"signatures/%s/documents/%s/reminder.json", signatureId, documentId
+			"signatures/%s/reminder.json", signatureId
 		);
 		return RequestHelper.requestPost(this.url + route, null, null);
 	}
