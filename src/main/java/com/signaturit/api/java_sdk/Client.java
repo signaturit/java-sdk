@@ -64,7 +64,6 @@ public class Client {
 	/**
 	 * @param accesToken the token that grant access and identify the user
 	 * @param production define if use production or sandbox end-point.
-	 * @return an instance of Client.
 	 */
 	public Client(String accesToken, boolean production) 
 	{
@@ -131,9 +130,22 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public HttpResponse<JsonNode> getSignatures(int limit, int offset, Map<String, Object> parameters) throws UnirestException 
+	public HttpResponse<JsonNode> getSignatures(Integer limit, Integer offset, Map<String, Object> parameters) throws UnirestException 
 	{
-		String route = String.format("signatures.json?limit=%d&offset=%d", limit, offset);
+		String route = "signatures.json";
+		
+		if (limit != null || offset != null || parameters != null) {
+			route = route + "?";
+			
+			if (limit != null) {
+				route = route + String.format("limit=%d", limit);
+			}
+			
+			if (offset != null) {
+				route = route + String.format("offset=%d", offset);
+			}
+		}
+		
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
 		
 		return RequestHelper.requestGet(this.url + route);
@@ -143,7 +155,6 @@ public class Client {
 	 * 
 	 * @param signatureId
 	 * @param documentId
-	 * @param path
 	 * @return 
 	 * @throws UnirestException
 	 */
@@ -162,7 +173,6 @@ public class Client {
 	 * 
 	 * @param signatureId
 	 * @param documentId
-	 * @param path
 	 * @return 
 	 * @throws UnirestException
 	 */
@@ -285,8 +295,6 @@ public class Client {
 	
 	/**
 	 * 
-	 * @param limit
-	 * @param offset
 	 * @return
 	 * @throws UnirestException
 	 */
@@ -307,12 +315,23 @@ public class Client {
 	 * @return
 	 * @throws UnirestException
 	 */
-	public HttpResponse<JsonNode> getEmails(int limit, int offset, Map<String, Object> parameters) 
+	public HttpResponse<JsonNode> getEmails(Integer limit, Integer offset, Map<String, Object> parameters) 
 		throws UnirestException 
 	{
-		String route = String.format(
-			"emails.json?limit=%s&offset=%s", limit, offset 
-		);
+		String route = "emails.json";
+		
+		if (limit != null || offset != null || parameters != null) {
+			route = route + "?";
+			
+			if (limit != null) {
+				route = route + String.format("limit=%d", limit);
+			}
+			
+			if (offset != null) {
+				route = route + String.format("offset=%d", offset);
+			}
+		}
+		
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
 		return RequestHelper.requestGet(this.url + route);
 	}
@@ -380,7 +399,6 @@ public class Client {
 	 * 
 	 * @param emailId
 	 * @param certificateId
-	 * @param path
 	 * @return 
 	 * @throws UnirestException
 	 */

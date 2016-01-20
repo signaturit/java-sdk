@@ -28,12 +28,18 @@ public class RequestHelper {
 	{
 		if (parameters != null) {
 			for (Entry<String, Object>  entry : parameters.entrySet()) {
+				StringBuilder routeBuilder = new StringBuilder();
 			    if (entry.getKey().equals("ids")) {
-			    	String.join(",", (CharSequence[]) entry.getValue());
+			    	
+			    	String delim="";
+			    	for (CharSequence i : (CharSequence[]) entry.getValue()) {
+			    		routeBuilder.append(delim).append(i);
+			    		delim = ",";
+			    	}
 			    }
 			    
 			    route += String.format(
-			    	"&%s=%s", entry.getKey(), entry.getValue()
+			    	"&%s=%s", entry.getKey(), routeBuilder.toString()
 			    );
 			}
 		}
@@ -85,7 +91,7 @@ public class RequestHelper {
 	 * @param parameters
 	 * @param files
 	 * @return
-	 * @throws UnirestException
+	 * @throws UnirestException exception from unirest lib
 	 */
 	protected static HttpResponse<JsonNode> requestPost(String route, Map<String, Object> parameters, ArrayList<String> files) throws UnirestException 
 	{
@@ -107,7 +113,7 @@ public class RequestHelper {
 	 * @param parameters
 	 * @param file
 	 * @return
-	 * @throws UnirestException
+	 * @throws UnirestException exception from unirest lib
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
@@ -129,7 +135,7 @@ public class RequestHelper {
 	 * 
 	 * @param route
 	 * @return
-	 * @throws UnirestException
+	 * @throws UnirestException exception from unirest lib
 	 */
 	protected static HttpResponse<JsonNode> requestGet(String route) throws UnirestException 
 	{
@@ -143,7 +149,7 @@ public class RequestHelper {
 	 * 
 	 * @param route
 	 * @return
-	 * @throws UnirestException
+	 * @throws UnirestException exception from unirest lib
 	 */
 	protected static InputStream requestGetFile(String route) throws UnirestException 
 	{
@@ -157,7 +163,7 @@ public class RequestHelper {
 	 * @param route
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws UnirestException exception from unirest lib
 	 */
 	protected static HttpResponse<JsonNode> requestPatch(String route, HashMap<String, Object> parameters) throws UnirestException {
 		HttpResponse<JsonNode> jsonResponse = Unirest.patch(route)
