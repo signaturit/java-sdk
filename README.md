@@ -1,12 +1,12 @@
-============================================================
-DO NOT USE THIS CODE ON PRODUCTION UNTIL NEW RELEASE IS DONE
-============================================================
+=========================================
+DO NOT USE MASTER BRANCH
+========================
 
 Signaturit JAVA SDK
 =====================
-This package is a JAVA wrapper around the Signaturit API. If you didn't read the documentation yet, maybe it's time to take a look [here](http://docs.signaturit.com/).
+This package is a JAVA wrapper around the Signaturit API. If you didn't read the documentation yet, maybe it's time to take a look [here](https://docs.signaturit.com/).
 
-You'll need at least JAVA 1.7 to use this package.
+You'll need at least JAVA 1.6 to use this package.
 
 Configuration
 -------------
@@ -15,22 +15,25 @@ The recommended way to install the SDK is through [Maven](https://maven.apache.o
 
 Add the dependencies to you pom.xml :
 ```xml
-		<dependency>
-			<groupId>com.signaturit.java_sdk</groupId>
-			<artifactId>java-sdk</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+<dependency>
+  <groupId>com.signaturit.api</groupId>
+  <artifactId>java-sdk</artifactId>
+  <version>1.0.0</version>
+</dependency>
 ```
 Then import the library and instantiate the
 Client class passing in your API access token.
 
 ```java
-import com.signaturit.java_sdk.client;
-Client client = new Client("Bearer {youKey}", true);
+Client client = new Client("YOUR_ACCESS_TOKEN");
 ```
 
-Please note that by default the client will use our sandbox API. When you are
-ready to start using the production environment just get the correct access token and pass an additional argument to the constructor:
+Please note that by default the client will use our sandbox API. When you are ready to start using the production environment just get the correct access token and pass an additional argument to the constructor:
+
+```java
+Client client = new Client("YOUR_ACCESS_TOKEN", true);
+```
+All Client's methods will return a object of HttpResponse<JsonNode> class
 
 Examples
 --------
@@ -44,13 +47,13 @@ Retrieve all data from your signature requests using different filters.
 ##### All signatures
 
 ```java
-response = client.getSignatures(null, null, null);
+response = client.getSignatures();
 ```
 
 ##### Getting the last 50 signatures
 
 ```java
-response = client.getSignatures(50, 0, null);
+response = client.getSignatures(50);
 ```
 
 ##### Getting signatures with custom field "crm_id", limit = 10 and offset = 100
@@ -67,6 +70,7 @@ Count your signature requests.
 
 ```java
 HashMap<String, Object> filters = new HashMap<String,Object>();
+filters.put("crm_id", "customId");
 response = client.countSignatures(filters);
 ```
 
@@ -80,7 +84,7 @@ response = client.getSignature("signatureId");
 
 ###  Signature request
 
-Create a new signature request. Check all available [options](http://docs.signaturit.com/api/#sign_create_sign).
+Create a new signature request. You can check all signature [params](https://docs.signaturit.com/api/v3#sign_create_sign).
 
 ```java
 String filePath = "/documents/contracts/receipt250.pdf";
@@ -120,7 +124,7 @@ response = client.cancelSignature("signatureId");
 Send a reminder email.
 
 ```java
-response = client.sendSignatureReminder("signatureId", "documentId");
+response = client.sendSignatureReminder("signatureId");
 ```
 
 ### Get audit trail
@@ -137,16 +141,6 @@ Get the signed document of a signature request document and save it locally.
 
 ```java
 response = client.downloadSignedDocument("signatureId", "documentId");
-```
-
-## Account
-
-### Get account
-
-Retrieve the information of your account.
-
-```java
-response = client.getAccount();
 ```
 
 ## Branding
@@ -169,17 +163,16 @@ response = client.getBranding("brandingId");
 
 ### Create branding
 
-Create a new branding. You can check all branding params [here](http://docs.signaturit.com/api/#set_branding).`
+Create a new branding. You can check all branding [params](https://docs.signaturit.com/api/v3#set_branding).`
 
 ```java
-
-HashMap<String, Object> options = new HashMap<String, Object>();
 HashMap<String, Object> applicationText = new HashMap<String, Object>();
-
 applicationText.put("sign_button", "test sign");
 applicationText.put("send_button", "test send");
+
+HashMap<String, Object> options = new HashMap<String, Object>();
 options.put("application_texts", applicationText);
-options.put("corporate_layout_color", "#FFBF00");
+options.put("layout_color", "#FFBF00");
 
 response = client.createBranding(options);
 ```
@@ -190,17 +183,6 @@ Update a single branding.
 
 ```java
 response = $client.updateBranding("brandingId", options);
-```
-
-### Update branding email
-
-Change a email. Learn more about the emails [here](http://docs.signaturit.com/api/#put_template_branding).
-
-```java
-String filePath = "/html/youHTML.html";
-String templateName = "sign_request";
-
-response = client.updateBrandingEmail("brandingId", templateName, filePath);
 ```
 
 ## Template
@@ -222,11 +204,26 @@ response = client.getTemplates(limit, offset);
 
 ####Get all certified emails
 
-Retrieve all (delimited by limit and offset and filters) certified emails data.
-Is possible to navigate usign limit and ofsset and send filters.
+Retrieve all certified emails data.
 
 ```java
-response = client.getEmails(limit, offset, options)
+response = client.getEmails();
+```
+
+####Get last 50 emails
+
+```java
+int limit = 50;
+
+response = client.getEmails(limit);
+```
+
+### Count emails
+
+Count all certified emails.
+
+```java
+response = client.countEmails();
 ```
 
 ### Get email
@@ -237,23 +234,15 @@ Get a single email
 response = client.getEmail('emailId');
 ```
 
-### Count emails
-
-Count all certified emails. Send null for no filters.
-
-```java
-response = client.countEmails(filters);
-```
-
 ### Create email
 
-Create a new certified email. Put null instead of options for no options
+Create a new certified email
 
 ```java
 ArrayList<String> filesToEmail = new ArrayList<String>();
 filesToEmail.add("/path/youPdf.pdf");
-client.createEmail(filesToEmail, recipients, "subject", "body", options);
 
+client.createEmail(filesToEmail, recipients, "subject", "body");
 ```
 
 ### Get audit trail document
