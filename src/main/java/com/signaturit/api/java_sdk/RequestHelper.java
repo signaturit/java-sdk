@@ -1,20 +1,19 @@
 package com.signaturit.api.java_sdk;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.body.MultipartBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody.Builder;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class RequestHelper {
 
@@ -48,26 +47,39 @@ public class RequestHelper {
 	
 	/**
 	 * 
-	 * @param parameters
+	 * @param bodyBuilder
 	 * @param recipients
 	 * @param key
 	 */
-	protected static void parseParameters(Map<String, Object> parameters, Object recipients, String key) {
-		
-		if (!(recipients instanceof ArrayList || recipients instanceof HashMap)) {
-			parameters.put(key, recipients);
+	protected static void parseParameters(Builder bodyBuilder, Object recipients, String key) 
+	{	
+		if (recipients instanceof String) {
+			bodyBuilder.addFormDataPart(key, recipients.toString());
+		} else if (recipients instanceof int[]) {
+			int[] listArray = (int[]) recipients;
+			int i = 0;
+			for (Object item: listArray) {
+				bodyBuilder.addFormDataPart(key+"["+i+"]", item.toString());
+				++i;
+			}
+		} else if (recipients instanceof String[]) {
+			String[] listArray = (String[]) recipients;
+			int i = 0;
+			for (Object item: listArray) {
+				bodyBuilder.addFormDataPart(key+"["+i+"]", item.toString());
+				++i;
+			}
 		} else if (recipients instanceof ArrayList<?>) {
 			int i = 0;
 			for ( HashMap<String, Object> recipient: (ArrayList<HashMap<String, Object>>) recipients ) {
 				for (Entry<String, Object>  entry : recipient.entrySet()) {
 					
 					if (entry.getValue() instanceof ArrayList<?> || entry.getValue() instanceof HashMap) {
-						parseParameters(parameters, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
+						parseParameters(bodyBuilder, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
 					} else if (entry.getValue() instanceof HashMap) {
-						parseParameters(parameters, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
-						parameters.put(key+"["+i+"]["+entry.getKey()+"]", entry.getValue());
+						parseParameters(bodyBuilder, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
 					} else {
-						parseParameters(parameters, entry.getValue(), key+"["+entry.getKey()+"]");
+						parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
 					}
 				}
 				++i;
@@ -75,11 +87,11 @@ public class RequestHelper {
 		} else if (recipients instanceof HashMap) {
 			for (Entry<String, Object> entry: ((Map<String, Object>) recipients).entrySet()) {
 				if (entry.getValue() instanceof ArrayList<?> || entry.getValue() instanceof HashMap) {
-					parseParameters(parameters, entry.getValue(), key+"["+entry.getKey()+"]");
+					parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
 				} else if (entry.getValue() instanceof HashMap) {
-					parseParameters(parameters, entry.getValue(), key+"["+entry.getKey()+"]");
+					parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
 				} else {
-					parseParameters(parameters, entry.getValue(), key+"["+entry.getKey()+"]");
+					parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
 				}
 			}
 		}
@@ -88,88 +100,125 @@ public class RequestHelper {
 	/**
 	 * 
 	 * @param route
+	 * @param token
 	 * @param parameters
 	 * @param files
 	 * @return
-	 * @throws UnirestException exception from unirest lib
+	 * @throws IOException 
 	 */
-	protected static HttpResponse<JsonNode> requestPost(String route, Map<String, Object> parameters, ArrayList<String> files) throws UnirestException 
+	protected static Response requestPost(String route, String token, Map<String, Object> parameters, ArrayList<String> files) 
+			throws IOException 
 	{
-		MultipartBody request = Unirest.post(route)
-				.fields(parameters);
-			
-		if (files != null) {
-			for (String temp : files) {
-				request.field("files", new File(temp));
-			}
+		OkHttpClient client = new OkHttpClient();
+		
+		Builder requestPostBuilder = new okhttp3.MultipartBody.Builder()
+		.setType(okhttp3.MultipartBody.FORM);
+		
+		for (Entry<String, Object> entry: parameters.entrySet()) {
+			parseParameters(requestPostBuilder, entry.getValue(), entry.getKey());
 		}
 		
-		return request.asJson();
+		if (files != null) {
+			int i = 0;
+			for (String temp : files) {
+				File file = new File(temp);
+				requestPostBuilder.addFormDataPart(
+						"files["+i+"]", 
+						file.getName(),
+						RequestBody.create(MediaType.parse("*/*"), file)
+				);
+				++i;
+			}
+		}
+	
+		RequestBody requestBody = requestPostBuilder.build();
+		Request request = new Request.Builder()
+				.post(requestBody)
+				.addHeader("Authorization", token)
+				.addHeader("user-agent", "signaturit-java-sdk 1.0.0")
+				.url("http://api.signaturit.dev/app_dev.php/v3/signatures.json")
+				.build();
+		
+		Response response = client.newCall(request).execute();
+		
+		return response;
 	}
 	
 	/**
 	 * 
 	 * @param route
-	 * @param parameters
-	 * @param file
+	 * @param token
 	 * @return
-	 * @throws UnirestException exception from unirest lib
-	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	protected static HttpResponse<JsonNode> requestPut(String route, Map<String, Object> parameters, String file) throws UnirestException, URISyntaxException, IOException 
+	protected static Response requestGet(String route,String token) throws IOException 
 	{
+		OkHttpClient client = new OkHttpClient();
 		
-		final InputStream stream = new FileInputStream(file);
-		final byte[] bytes = new byte[stream.available()];
-		stream.read(bytes);
-		stream.close();
-		final HttpResponse<JsonNode> jsonResponse = Unirest.put(route)
-			.body(bytes)
-			.asJson();
+		Request request = new Request.Builder()
+				.get()
+				.addHeader("Authorization", token)
+				.addHeader("user-agent", "signaturit-java-sdk 1.0.0")
+				.url(route)
+				.build();
 		
-		return jsonResponse;
+		Response response = client.newCall(request).execute();
+		
+		return response;
 	}
 	
 	/**
 	 * 
 	 * @param route
+	 * @param token
 	 * @return
-	 * @throws UnirestException exception from unirest lib
+	 * @throws IOException
 	 */
-	protected static HttpResponse<JsonNode> requestGet(String route) throws UnirestException 
+	protected static InputStream requestGetFile(String route, String token) throws IOException 
 	{
-		HttpResponse<JsonNode> jsonResponse = Unirest.get(route)
-				.asJson();
+		OkHttpClient client = new OkHttpClient();
 		
-		return jsonResponse;
+		Request request = new Request.Builder()
+				.get()
+				.addHeader("Authorization", token)
+				.addHeader("user-agent", "signaturit-java-sdk 1.0.0")
+				.url(route)
+				.build();
+		
+		Response response = client.newCall(request).execute();
+		
+		return response.body().byteStream();
 	}
 	
 	/**
 	 * 
 	 * @param route
-	 * @return
-	 * @throws UnirestException exception from unirest lib
-	 */
-	protected static InputStream requestGetFile(String route) throws UnirestException 
-	{
-		InputStream byteResponse = Unirest.get(route)
-			.asBinary().getBody();
-		return byteResponse;
-	}
-	
-	/**
-	 * 
-	 * @param route
+	 * @param token
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException exception from unirest lib
+	 * @throws IOException
 	 */
-	protected static HttpResponse<JsonNode> requestPatch(String route, HashMap<String, Object> parameters) throws UnirestException {
-		HttpResponse<JsonNode> jsonResponse = Unirest.patch(route)
-			.fields(parameters)
-			.asJson();
+	protected static Response requestPatch(String route, String token, HashMap<String, Object> parameters) throws IOException 
+	{
+		OkHttpClient client = new OkHttpClient();
 		
-		return jsonResponse;
+		Builder requestPostBuilder = new okhttp3.MultipartBody.Builder()
+		.setType(okhttp3.MultipartBody.FORM);
+		
+		for (Entry<String, Object> entry: parameters.entrySet()) {
+			parseParameters(requestPostBuilder, entry.getValue(), entry.getKey());
+		}
+		
+		RequestBody requestBody = requestPostBuilder.build();
+		Request request = new Request.Builder()
+				.post(requestBody)
+				.addHeader("Authorization", token)
+				.addHeader("user-agent", "signaturit-java-sdk 1.0.0")
+				.url("http://api.signaturit.dev/app_dev.php/v3/signatures.json")
+				.build();
+		
+		Response response = client.newCall(request).execute();
+		
+		return response;
 	}
 }
