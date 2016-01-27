@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import okhttp3.Response;
 
 public class Client {
 	
@@ -46,9 +43,6 @@ public class Client {
 		this.accessToken = "Bearer "+ accesToken;
 		this.url = production ? Client.PROD_BASE_URL : Client.SANDBOX_BASE_URL;
 		this.url += Client.API_VERSION;
-
-		Unirest.setDefaultHeader("Authorization", this.accessToken);
-		Unirest.setDefaultHeader("user-agent", "signaturit-java-sdk 1.0.0");
 	}
 	
 	/**
@@ -59,83 +53,71 @@ public class Client {
 		this.accessToken = "Bearer "+ accesToken;
 		this.url = Client.SANDBOX_BASE_URL;
 		this.url += Client.API_VERSION;
-
-		Unirest.setDefaultHeader("Authorization", this.accessToken);
-		Unirest.setDefaultHeader("user-agent", "signaturit-java-sdk 1.0.0");
-	}
-
-	/**
-	 * 
-	 * @throws IOException
-	 */
-	protected void shutDown() throws IOException 
-	{
-		Unirest.shutdown();
 	}
 
 	/**
 	 * 
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> countSignatures() throws UnirestException 
+	public Response countSignatures() throws IOException 
 	{
 		String route = "signatures/count.json";
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException
 	 */
-	public HttpResponse<JsonNode> countSignatures(Map<String, Object> parameters) throws UnirestException 
+	public Response countSignatures(Map<String, Object> parameters) throws IOException 
 	{
 		String route = RequestHelper.putGetParamsToUrl("signatures/count.json?", parameters);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
-
+	
 	/**
 	 * 
 	 * @param signatureId 
 	 * @return 
-	 * @throws UnirestException
+	 * @throws IOException
 	 */
-	public HttpResponse<JsonNode> getSignature(String signatureId) throws UnirestException 
+	public Response getSignature(String signatureId) throws IOException 
 	{
 		String route = (
 			String.format("signatures/%s.json", signatureId)
 		);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 
 	/**
 	 * 
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getSignatures() throws UnirestException 
+	public Response getSignatures() throws IOException  
 	{
 		String route = "signatures.json";
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @param limit
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException
 	 */
-	public HttpResponse<JsonNode> getSignatures(int limit) throws UnirestException 
+	public Response getSignatures(int limit) throws IOException 
 	{
 		String route = String.format("signatures.json?limit=%d", limit);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
@@ -143,28 +125,28 @@ public class Client {
 	 * @param limit
 	 * @param offset
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getSignatures(int limit, int offset) throws UnirestException 
+	public Response getSignatures(int limit, int offset) throws IOException 
 	{
 		String route = String.format("signatures.json?limit=%doffset=%d", limit, offset);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getSignatures(Map<String, Object> parameters) throws UnirestException 
+	public Response getSignatures(Map<String, Object> parameters) throws IOException  
 	{
 		String route = "signatures.json?";
 		
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
@@ -173,15 +155,15 @@ public class Client {
 	 * @param offset
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getSignatures(int limit, int offset, Map<String, Object> parameters) throws UnirestException 
+	public Response getSignatures(int limit, int offset, Map<String, Object> parameters) throws IOException 
 	{
 		String route = String.format("signatures.json?limit=%doffset=%d", limit, offset);
 		
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
@@ -189,17 +171,15 @@ public class Client {
 	 * @param signatureId
 	 * @param documentId
 	 * @return 
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> downloadAuditTrail(String signatureId, String documentId) 
-			throws UnirestException
+	public Response downloadAuditTrail(String signatureId, String documentId) throws IOException 
 	{
 		String route = String.format(
 			"signatures/%s/documents/%s/download/audit_trail", signatureId, documentId
 		);
 		
-		return RequestHelper.requestGet(this.url + route);
-		//InputStream downloadedFile = RequestHelper.requestGetFile(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
@@ -207,16 +187,15 @@ public class Client {
 	 * @param signatureId
 	 * @param documentId
 	 * @return 
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> downloadSignedDocument(String signatureId, String documentId) 
-			throws UnirestException
+	public Response downloadSignedDocument(String signatureId, String documentId) throws IOException 
 	{
 		String route = String.format(
 			"signatures/%s/documents/%s/download/signed", signatureId, documentId
 		);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
@@ -224,12 +203,12 @@ public class Client {
 	 * @param files
 	 * @param recipients
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> createSignature(
+	public Response createSignature(
 		ArrayList<String> files,
 		ArrayList<HashMap<String, Object>> recipients
-	) throws UnirestException
+	) throws IOException
 	{
 		HashMap<String, Object> parameters= new HashMap<String, Object>();
 		
@@ -242,88 +221,86 @@ public class Client {
 	 * @param recipients
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> createSignature(
+	public Response createSignature(
 		ArrayList<String> files,
 		ArrayList<HashMap<String, Object>> recipients,
 		Map<String, Object> parameters
-	) throws UnirestException
+	) throws IOException
 	{
 		String route = "signatures.json";
 		
-		parameters.put("files", files);
+		parameters.put("recipients", recipients);
 		
-		RequestHelper.parseParameters(parameters, recipients, "recipients");
-		
-		return RequestHelper.requestPost(this.url + route, parameters, files);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, parameters, files);
 	}
 	
 	/**
 	 * 
 	 * @param signatureId
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> cancelSignature(String signatureId) throws UnirestException
+	public Response cancelSignature(String signatureId) throws IOException
 	{
 		String route = String.format(
 			"signatures/%s/cancel.json", signatureId
 		);
 		
-		return RequestHelper.requestPatch(this.url + route, null);
+		return RequestHelper.requestPatch(this.url + route, this.accessToken, null);
 	}
 	
 	/**
 	 * 
 	 * @param signatureId
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> sendSignatureReminder(String signatureId) throws UnirestException
+	public Response sendSignatureReminder(String signatureId) throws IOException
 	{
 		String route = String.format(
 			"signatures/%s/reminder.json", signatureId
 		);
-		return RequestHelper.requestPost(this.url + route, null, null);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, null, null);
 	}
 	
 	/**
 	 * 
 	 * @param brandingId
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException
 	 */
-	public HttpResponse<JsonNode> getBranding(String brandingId) throws UnirestException
+	public Response getBranding(String brandingId) throws IOException
 	{
 		String route = String.format(
 			"brandings/%s.json", brandingId
 		);
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException
 	 */
-	public HttpResponse<JsonNode> getBrandings() throws UnirestException
+	public Response getBrandings() throws IOException
 	{
 		String route = "brandings.json";
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> createBranding(HashMap<String, Object> parameters) throws UnirestException
+	public Response createBranding(HashMap<String, Object> parameters) throws IOException
 	{
 		String route = "brandings.json";
-		return RequestHelper.requestPost(this.url + route, parameters, null);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, parameters, null);
 	}
 	
 	/**
@@ -331,56 +308,56 @@ public class Client {
 	 * @param brandingId
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> updateBranding(String brandingId, HashMap<String, Object> parameters) 
-		throws UnirestException
+	public Response updateBranding(String brandingId, HashMap<String, Object> parameters) 
+		throws IOException
 	{
 		String route = String.format(
 			"brandings/%s.json", brandingId
 		);
-		return RequestHelper.requestPatch(this.url + route, parameters);
+		return RequestHelper.requestPatch(this.url + route, this.accessToken, parameters);
 	}
 	
 	/**
 	 * 
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getTemplates() throws UnirestException
+	public Response getTemplates() throws IOException
 	{
 		String route = String.format(
 			"templates.json"
 		);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 *
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getEmails() 
-		throws UnirestException 
+	public Response getEmails() 
+		throws IOException 
 	{
 		String route = "emails.json";
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @param limit
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getEmails(int limit) 
-		throws UnirestException 
+	public Response getEmails(int limit) 
+		throws IOException 
 	{
 		String route = String.format("emails.json?limit=%d", limit);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
@@ -388,29 +365,27 @@ public class Client {
 	 * @param limit
 	 * @param offset
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getEmails(int limit, int offset) 
-		throws UnirestException 
+	public Response getEmails(int limit, int offset) throws IOException 
 	{
 		String route = String.format("emails.json?limit=%doffset=%d", limit, offset);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getEmails(Map<String, Object> parameters) 
-		throws UnirestException 
+	public Response getEmails(Map<String, Object> parameters) throws IOException 
 	{
 		String route = "emails.json?";
 		
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
@@ -419,57 +394,54 @@ public class Client {
 	 * @param offset
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getEmails(int limit, int offset, Map<String, Object> parameters) 
-		throws UnirestException 
+	public Response getEmails(int limit, int offset, Map<String, Object> parameters) throws IOException 
 	{
 		String route = String.format("emails.json?limit=%doffset=%d", limit, offset);
 		
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> countEmails() 
-		throws UnirestException
+	public Response countEmails() throws IOException 
 	{
 		String route = "emails/count.json";
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException
 	 */
-	public HttpResponse<JsonNode> countEmails(Map<String, Object> parameters) 
-		throws UnirestException
+	public Response countEmails(Map<String, Object> parameters) throws IOException 
 	{
 		String route = "emails/count.json?";
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
 	 * 
 	 * @param emailId
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> getEmail(String emailId) throws UnirestException
+	public Response getEmail(String emailId) throws IOException
 	{
 		String route = String.format(
 			"emails/%s.json", emailId
 		);
 		
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
 	/**
@@ -477,22 +449,20 @@ public class Client {
 	 * @param files
 	 * @param recipients
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> createEmail(
+	public Response createEmail(
 		ArrayList<String> files, 
 		ArrayList<HashMap<String, Object>> recipients
-	) throws UnirestException
+	) throws IOException
 	{
 		String route = "emails.json";
 		
 		HashMap<String, Object>	parameters = new HashMap<String, Object>();
 		
-		parameters.put("files", files);
+		parameters.put("recipients", recipients);
 		
-		RequestHelper.parseParameters(parameters, recipients, "recipients");
-		
-		return RequestHelper.requestPost(this.url + route, parameters, files);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, parameters, files);
 	}
 	
 	/**
@@ -502,13 +472,13 @@ public class Client {
 	 * @param subject
 	 * @param body
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> createEmail(
+	public Response createEmail(
 		ArrayList<String> files, 
 		ArrayList<HashMap<String, Object>> recipients, 
 		String subject, String body
-	) throws UnirestException
+	) throws IOException
 	{	
 		HashMap<String, Object>	parameters = new HashMap<String, Object>();
 		
@@ -521,13 +491,13 @@ public class Client {
 	 * @param recipients
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> createEmail(
+	public Response createEmail(
 		ArrayList<String> files, 
 		ArrayList<HashMap<String, Object>> recipients, 
 		HashMap<String, Object> parameters
-	) throws UnirestException
+	) throws IOException
 	{
 		String route = "emails.json";
 		
@@ -535,11 +505,9 @@ public class Client {
 			parameters = new HashMap<String, Object>();
 		}
 		
-		parameters.put("files", files);
+		parameters.put("recipients", recipients);
 		
-		RequestHelper.parseParameters(parameters, recipients, "recipients");
-		
-		return RequestHelper.requestPost(this.url + route, parameters, files);
+		return RequestHelper.requestPost(this.url + route, this.accessToken,  parameters, files);
 	}
 	
 	/**
@@ -550,15 +518,15 @@ public class Client {
 	 * @param body
 	 * @param parameters
 	 * @return
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> createEmail(
+	public Response createEmail(
 		ArrayList<String> files, 
 		ArrayList<HashMap<String, Object>> recipients, 
 		String subject, 
 		String body, 
 		HashMap<String, Object> parameters
-	) throws UnirestException
+	) throws IOException
 	{
 		String route = "emails.json";
 		
@@ -566,13 +534,11 @@ public class Client {
 			parameters = new HashMap<String, Object>();
 		}
 		
-		parameters.put("files", files);
 		parameters.put("body", body);
 		parameters.put("subject", subject);
+		parameters.put("recipients", recipients);
 		
-		RequestHelper.parseParameters(parameters, recipients, "recipients");
-		
-		return RequestHelper.requestPost(this.url + route, parameters, files);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, parameters, files);
 	}
 	
 	/**
@@ -580,14 +546,14 @@ public class Client {
 	 * @param emailId
 	 * @param certificateId
 	 * @return 
-	 * @throws UnirestException
+	 * @throws IOException 
 	 */
-	public HttpResponse<JsonNode> downloadEmailAuditTrail(String emailId, String certificateId) 
-		throws UnirestException 
+	public Response downloadEmailAuditTrail(String emailId, String certificateId) 
+		throws IOException 
 	{
 		String route = String.format(
 			"emails/%s/certificates/%s/download/audit_trail", emailId, certificateId
 		);
-		return RequestHelper.requestGet(this.url + route);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 }

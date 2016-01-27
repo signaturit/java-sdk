@@ -33,7 +33,15 @@ Please note that by default the client will use our sandbox API. When you are re
 ```java
 Client client = new Client("YOUR_ACCESS_TOKEN", true);
 ```
-All Client's methods will return a object of HttpResponse<JsonNode> class
+All Client's methods will return a object of Response class.
+
+Example: Print body result as String.
+
+```java
+Response response = client.countSignatures();
+		
+System.out.println(response.body().string());
+```
 
 Examples
 --------
