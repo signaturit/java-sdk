@@ -18,6 +18,11 @@ import okhttp3.Response;
 public class RequestHelper {
 
 	/**
+	 * User agent
+	 */
+	public static final String USER_AGENT = "signaturit-java-sdk 1.0.1" ;
+	
+	/**
 	 * 
 	 * @param route
 	 * @param parameters
@@ -135,7 +140,7 @@ public class RequestHelper {
 		Request request = new Request.Builder()
 				.post(requestBody)
 				.addHeader("Authorization", token)
-				.addHeader("user-agent", "signaturit-java-sdk 1.0.0")
+				.addHeader("user-agent", RequestHelper.USER_AGENT)
 				.url("http://api.signaturit.dev/app_dev.php/v3/signatures.json")
 				.build();
 		
@@ -158,7 +163,7 @@ public class RequestHelper {
 		Request request = new Request.Builder()
 				.get()
 				.addHeader("Authorization", token)
-				.addHeader("user-agent", "signaturit-java-sdk 1.0.0")
+				.addHeader("user-agent", RequestHelper.USER_AGENT)
 				.url(route)
 				.build();
 		
@@ -181,7 +186,7 @@ public class RequestHelper {
 		Request request = new Request.Builder()
 				.get()
 				.addHeader("Authorization", token)
-				.addHeader("user-agent", "signaturit-java-sdk 1.0.0")
+				.addHeader("user-agent", RequestHelper.USER_AGENT)
 				.url(route)
 				.build();
 		
@@ -213,8 +218,8 @@ public class RequestHelper {
 		Request request = new Request.Builder()
 				.post(requestBody)
 				.addHeader("Authorization", token)
-				.addHeader("user-agent", "signaturit-java-sdk 1.0.0")
-				.url("http://api.signaturit.dev/app_dev.php/v3/signatures.json")
+				.addHeader("user-agent", RequestHelper.USER_AGENT)
+				.url(route)
 				.build();
 		
 		Response response = client.newCall(request).execute();
