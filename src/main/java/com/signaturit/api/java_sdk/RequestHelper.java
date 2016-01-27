@@ -141,7 +141,7 @@ public class RequestHelper {
 				.post(requestBody)
 				.addHeader("Authorization", token)
 				.addHeader("user-agent", RequestHelper.USER_AGENT)
-				.url("http://api.signaturit.dev/app_dev.php/v3/signatures.json")
+				.url(route)
 				.build();
 		
 		Response response = client.newCall(request).execute();
