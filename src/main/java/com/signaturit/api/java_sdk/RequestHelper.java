@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody.Builder;
@@ -15,18 +16,23 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class RequestHelper {
+class RequestHelper {
 
 	/**
 	 * User agent
 	 */
-	public static final String USER_AGENT = "signaturit-java-sdk 1.0.1" ;
+	public static final String USER_AGENT = "signaturit-java-sdk 1.0.3" ;
+	
+	/**
+	 * 
+	 */
+	public static final int timeout = 30;
 	
 	/**
 	 * 
 	 * @param route
 	 * @param parameters
-	 * @return
+	 * @return<
 	 */
 	protected static String putGetParamsToUrl(String route, Map<String, Object> parameters)
 	{
@@ -111,11 +117,11 @@ public class RequestHelper {
 	 * @return
 	 * @throws IOException 
 	 */
-	protected static Response requestPost(String route, String token, Map<String, Object> parameters, ArrayList<String> files) 
+	protected static Response requestPost(String route, String token, Map<String, Object> parameters, ArrayList<File> files) 
 			throws IOException 
 	{
-		OkHttpClient client = new OkHttpClient();
-		
+		OkHttpClient client = RequestHelper.defaultClient();
+				
 		Builder requestPostBuilder = new okhttp3.MultipartBody.Builder()
 		.setType(okhttp3.MultipartBody.FORM);
 		
@@ -125,12 +131,11 @@ public class RequestHelper {
 		
 		if (files != null) {
 			int i = 0;
-			for (String temp : files) {
-				File file = new File(temp);
+			for (File temp : files) {
 				requestPostBuilder.addFormDataPart(
 						"files["+i+"]", 
-						file.getName(),
-						RequestBody.create(MediaType.parse("*/*"), file)
+						temp.getName(),
+						RequestBody.create(MediaType.parse("*/*"), temp)
 				);
 				++i;
 			}
@@ -158,7 +163,7 @@ public class RequestHelper {
 	 */
 	protected static Response requestGet(String route,String token) throws IOException 
 	{
-		OkHttpClient client = new OkHttpClient();
+		OkHttpClient client = RequestHelper.defaultClient();
 		
 		Request request = new Request.Builder()
 				.get()
@@ -181,7 +186,7 @@ public class RequestHelper {
 	 */
 	protected static InputStream requestGetFile(String route, String token) throws IOException 
 	{
-		OkHttpClient client = new OkHttpClient();
+		OkHttpClient client = RequestHelper.defaultClient();
 		
 		Request request = new Request.Builder()
 				.get()
@@ -205,7 +210,7 @@ public class RequestHelper {
 	 */
 	protected static Response requestPatch(String route, String token, HashMap<String, Object> parameters) throws IOException 
 	{
-		OkHttpClient client = new OkHttpClient();
+		OkHttpClient client = RequestHelper.defaultClient();
 		
 		Builder requestPostBuilder = new okhttp3.MultipartBody.Builder()
 		.setType(okhttp3.MultipartBody.FORM);
@@ -225,5 +230,16 @@ public class RequestHelper {
 		Response response = client.newCall(request).execute();
 		
 		return response;
+	}
+	
+	private static OkHttpClient defaultClient() 
+	{
+		OkHttpClient client = new OkHttpClient.Builder()
+				.connectTimeout(RequestHelper.timeout,TimeUnit.SECONDS)
+				.writeTimeout(RequestHelper.timeout, TimeUnit.SECONDS)
+				.readTimeout(RequestHelper.timeout, TimeUnit.SECONDS)
+				.build();
+		
+		return client;
 	}
 }

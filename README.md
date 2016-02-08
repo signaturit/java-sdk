@@ -18,9 +18,16 @@ Add the dependencies to you pom.xml :
 <dependency>
   <groupId>com.signaturit.api</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.3</version>
 </dependency>
 ```
+
+or [Gradle](http://gradle.org/).
+
+```json
+compile 'com.signaturit.api:java-sdk:1.0.3'
+```
+
 Then import the library and instantiate the
 Client class passing in your API access token.
 
@@ -95,19 +102,22 @@ response = client.getSignature("signatureId");
 Create a new signature request. You can check all signature [params](https://docs.signaturit.com/api/v3#sign_create_sign).
 
 ```java
-String filePath = "/documents/contracts/receipt250.pdf";
+ArrayList<File> files = new ArrayList<File>();
+File signFile = new File("/documents/contracts/receipt250.pdf");
+files.add(signFile);
+
 ArrayList<HashMap<String, Object>> recipients = new ArrayList<HashMap<String,Object>>();
 HashMap<String, Object> recipient= new HashMap<String, Object>();
-HashMap<String, Object> options= new HashMap<String, Object>();
 
 recipient.put("email", "john.doe@example.com");
 recipient.put("fullname", "John Doe");
 recipients.add(recipient);
 
+HashMap<String, Object> options= new HashMap<String, Object>();
 options.put("subject", "Receipt no. 250");
 options.put("body", "please sign the receipt");
 
-response = client.createSignature(filePath, recipients, options);
+response = client.createSignature(files, recipients, options);
 ```
 
 You can send templates with the fields filled
@@ -247,10 +257,11 @@ response = client.getEmail('emailId');
 Create a new certified email
 
 ```java
-ArrayList<String> filesToEmail = new ArrayList<String>();
-filesToEmail.add("/path/youPdf.pdf");
+ArrayList<File> files = new ArrayList<File>();
+File fileToEmail = new File("/path/youPdf.pdf");
+files.add(fileToEmail);
 
-client.createEmail(filesToEmail, recipients, "subject", "body");
+client.createEmail(files, recipients, "subject", "body");
 ```
 
 ### Get audit trail document

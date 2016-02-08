@@ -1,5 +1,6 @@
 package com.signaturit.api.java_sdk;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -206,7 +207,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public Response createSignature(
-		ArrayList<String> files,
+		ArrayList<File> files,
 		ArrayList<HashMap<String, Object>> recipients
 	) throws IOException
 	{
@@ -224,7 +225,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public Response createSignature(
-		ArrayList<String> files,
+		ArrayList<File> files,
 		ArrayList<HashMap<String, Object>> recipients,
 		Map<String, Object> parameters
 	) throws IOException
@@ -452,7 +453,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public Response createEmail(
-		ArrayList<String> files, 
+		ArrayList<File> files, 
 		ArrayList<HashMap<String, Object>> recipients
 	) throws IOException
 	{
@@ -475,7 +476,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public Response createEmail(
-		ArrayList<String> files, 
+		ArrayList<File> files, 
 		ArrayList<HashMap<String, Object>> recipients, 
 		String subject, String body
 	) throws IOException
@@ -494,7 +495,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public Response createEmail(
-		ArrayList<String> files, 
+		ArrayList<File> files, 
 		ArrayList<HashMap<String, Object>> recipients, 
 		HashMap<String, Object> parameters
 	) throws IOException
@@ -521,7 +522,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public Response createEmail(
-		ArrayList<String> files, 
+		ArrayList<File> files, 
 		ArrayList<HashMap<String, Object>> recipients, 
 		String subject, 
 		String body, 
