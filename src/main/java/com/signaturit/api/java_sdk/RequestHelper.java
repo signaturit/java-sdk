@@ -21,7 +21,7 @@ class RequestHelper {
 	/**
 	 * User agent
 	 */
-	public static final String USER_AGENT = "signaturit-java-sdk 1.0.3" ;
+	public static final String USER_AGENT = "signaturit-java-sdk 1.0.4" ;
 	
 	/**
 	 * 
@@ -84,26 +84,13 @@ class RequestHelper {
 			int i = 0;
 			for ( HashMap<String, Object> recipient: (ArrayList<HashMap<String, Object>>) recipients ) {
 				for (Entry<String, Object>  entry : recipient.entrySet()) {
-					
-					if (entry.getValue() instanceof ArrayList<?> || entry.getValue() instanceof HashMap) {
-						parseParameters(bodyBuilder, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
-					} else if (entry.getValue() instanceof HashMap) {
-						parseParameters(bodyBuilder, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
-					} else {
-						parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
-					}
+					parseParameters(bodyBuilder, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
 				}
 				++i;
 			}
 		} else if (recipients instanceof HashMap) {
 			for (Entry<String, Object> entry: ((Map<String, Object>) recipients).entrySet()) {
-				if (entry.getValue() instanceof ArrayList<?> || entry.getValue() instanceof HashMap) {
-					parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
-				} else if (entry.getValue() instanceof HashMap) {
-					parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
-				} else {
-					parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
-				}
+				parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
 			}
 		}
 	}
