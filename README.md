@@ -103,8 +103,8 @@ Create a new signature request. You can check all signature [params](https://doc
 
 ```java
 ArrayList<File> files = new ArrayList<File>();
-File signFile = new File("/documents/contracts/receipt250.pdf");
-files.add(signFile);
+File file = new File("/documents/contracts/receipt250.pdf");
+files.add(file);
 
 ArrayList<HashMap<String, Object>> recipients = new ArrayList<HashMap<String,Object>>();
 HashMap<String, Object> recipient= new HashMap<String, Object>();
