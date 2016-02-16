@@ -18,27 +18,27 @@ Add the dependencies to you pom.xml :
 <dependency>
   <groupId>com.signaturit.api</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
 </dependency>
 ```
 
 or [Gradle](http://gradle.org/).
 
 ```json
-compile 'com.signaturit.api:java-sdk:1.0.4'
+compile 'com.signaturit.api:java-sdk:1.0.5'
 ```
 
 Then import the library and instantiate the
 Client class passing in your API access token.
 
 ```java
-Client client = new Client("YOUR_ACCESS_TOKEN");
+SignaturitClient client = new SignaturitClient("YOUR_ACCESS_TOKEN");
 ```
 
 Please note that by default the client will use our sandbox API. When you are ready to start using the production environment just get the correct access token and pass an additional argument to the constructor:
 
 ```java
-Client client = new Client("YOUR_ACCESS_TOKEN", true);
+SignaturitClient client = new SignaturitClient("YOUR_ACCESS_TOKEN", true);
 ```
 All Client's methods will return a object of Response class.
 
