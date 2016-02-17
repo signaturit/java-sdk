@@ -32,7 +32,7 @@ Then import the library and instantiate the
 Client class passing in your API access token.
 
 ```java
-SignaturitClient client = new SignaturitClient("YOUR_ACCESS_TOKEN");
+Client client = new Client("YOUR_ACCESS_TOKEN");
 ```
 
 Please note that by default the client will use our sandbox API. When you are ready to start using the production environment just get the correct access token and pass an additional argument to the constructor:

@@ -8,7 +8,7 @@ import java.util.Map;
 
 import okhttp3.Response;
 
-public class SignaturitClient {
+public class Client {
 	
 	/**
 	 * Signaturit's production API URL
@@ -39,21 +39,21 @@ public class SignaturitClient {
 	 * @param accesToken the token that grant access and identify the user
 	 * @param production define if use production or sandbox end-point.
 	 */
-	public SignaturitClient(String accesToken, boolean production) 
+	public Client(String accesToken, boolean production) 
 	{
 		this.accessToken = "Bearer "+ accesToken;
-		this.url = production ? SignaturitClient.PROD_BASE_URL : SignaturitClient.SANDBOX_BASE_URL;
-		this.url += SignaturitClient.API_VERSION;
+		this.url = production ? Client.PROD_BASE_URL : Client.SANDBOX_BASE_URL;
+		this.url += Client.API_VERSION;
 	}
 	
 	/**
 	 * @param accesToken the token that grant access and identify the user
 	 */
-	public SignaturitClient(String accesToken) 
+	public Client(String accesToken) 
 	{
 		this.accessToken = "Bearer "+ accesToken;
-		this.url = SignaturitClient.SANDBOX_BASE_URL;
-		this.url += SignaturitClient.API_VERSION;
+		this.url = Client.SANDBOX_BASE_URL;
+		this.url += Client.API_VERSION;
 	}
 
 	/**
