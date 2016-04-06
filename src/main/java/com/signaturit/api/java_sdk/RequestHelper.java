@@ -21,7 +21,7 @@ class RequestHelper {
 	/**
 	 * User agent
 	 */
-	public static final String USER_AGENT = "signaturit-java-sdk 1.0.6" ;
+	public static final String USER_AGENT = "signaturit-java-sdk 1.0.7" ;
 	
 	/**
 	 * 
@@ -64,7 +64,7 @@ class RequestHelper {
 	 */
 	protected static void parseParameters(Builder bodyBuilder, Object recipients, String key) 
 	{	
-		if (recipients instanceof String) {
+		if (recipients instanceof String || recipients instanceof Integer) {
 			bodyBuilder.addFormDataPart(key, recipients.toString());
 		} else if (recipients instanceof int[]) {
 			int[] listArray = (int[]) recipients;
