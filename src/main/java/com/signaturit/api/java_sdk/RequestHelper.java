@@ -21,7 +21,7 @@ class RequestHelper {
 	/**
 	 * User agent
 	 */
-	public static final String USER_AGENT = "signaturit-java-sdk 1.0.7" ;
+	public static final String USER_AGENT = "signaturit-java-sdk 1.0.8" ;
 	
 	/**
 	 * 
@@ -112,8 +112,10 @@ class RequestHelper {
 		Builder requestPostBuilder = new okhttp3.MultipartBody.Builder()
 		.setType(okhttp3.MultipartBody.FORM);
 		
-		for (Entry<String, Object> entry: parameters.entrySet()) {
-			parseParameters(requestPostBuilder, entry.getValue(), entry.getKey());
+		if (parameters != null) {
+			for (Entry<String, Object> entry: parameters.entrySet()) {
+				parseParameters(requestPostBuilder, entry.getValue(), entry.getKey());
+			}
 		}
 		
 		if (files != null) {
@@ -128,7 +130,15 @@ class RequestHelper {
 			}
 		}
 	
-		RequestBody requestBody = requestPostBuilder.build();
+		RequestBody requestBody = null;
+		
+		if (files == null && parameters == null) {
+			requestPostBuilder.addFormDataPart("", "");
+			requestBody = requestPostBuilder.build();
+		} else {
+			requestBody = requestPostBuilder.build();
+		}
+		
 		Request request = new Request.Builder()
 				.post(requestBody)
 				.addHeader("Authorization", token)
@@ -202,13 +212,23 @@ class RequestHelper {
 		Builder requestPostBuilder = new okhttp3.MultipartBody.Builder()
 		.setType(okhttp3.MultipartBody.FORM);
 		
-		for (Entry<String, Object> entry: parameters.entrySet()) {
-			parseParameters(requestPostBuilder, entry.getValue(), entry.getKey());
+		if (parameters != null) {
+			for (Entry<String, Object> entry: parameters.entrySet()) {
+				parseParameters(requestPostBuilder, entry.getValue(), entry.getKey());
+			}
 		}
 		
-		RequestBody requestBody = requestPostBuilder.build();
+		RequestBody requestBody = null;
+		
+		if (parameters == null) {
+			requestPostBuilder.addFormDataPart("", "");
+			requestBody = requestPostBuilder.build();
+		} else {
+			requestBody = requestPostBuilder.build();
+		}
+		
 		Request request = new Request.Builder()
-				.post(requestBody)
+				.patch(requestBody)
 				.addHeader("Authorization", token)
 				.addHeader("user-agent", RequestHelper.USER_AGENT)
 				.url(route)
