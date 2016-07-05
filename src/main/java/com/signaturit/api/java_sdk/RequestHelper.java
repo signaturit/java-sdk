@@ -21,7 +21,7 @@ class RequestHelper {
 	/**
 	 * User agent
 	 */
-	public static final String USER_AGENT = "signaturit-java-sdk 1.0.8" ;
+	public static final String USER_AGENT = "signaturit-java-sdk 1.0.9" ;
 	
 	/**
 	 * 
@@ -91,6 +91,45 @@ class RequestHelper {
 		} else if (recipients instanceof HashMap) {
 			for (Entry<String, Object> entry: ((Map<String, Object>) recipients).entrySet()) {
 				parseParameters(bodyBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param requestPostBuilder
+	 * @param recipients
+	 * @param key
+	 */
+	protected static void parseParametersPatch(okhttp3.FormBody.Builder requestPostBuilder, Object recipients, String key) 
+	{	
+		if (recipients instanceof String || recipients instanceof Integer) {
+			requestPostBuilder.addEncoded(key, recipients.toString());
+		} else if (recipients instanceof int[]) {
+			int[] listArray = (int[]) recipients;
+			int i = 0;
+			for (Object item: listArray) {
+				requestPostBuilder.addEncoded(key+"["+i+"]", item.toString());
+				++i;
+			}
+		} else if (recipients instanceof String[]) {
+			String[] listArray = (String[]) recipients;
+			int i = 0;
+			for (Object item: listArray) {
+				requestPostBuilder.addEncoded(key+"["+i+"]", item.toString());
+				++i;
+			}
+		} else if (recipients instanceof ArrayList<?>) {
+			int i = 0;
+			for ( HashMap<String, Object> recipient: (ArrayList<HashMap<String, Object>>) recipients ) {
+				for (Entry<String, Object>  entry : recipient.entrySet()) {
+					parseParametersPatch(requestPostBuilder, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
+				}
+				++i;
+			}
+		} else if (recipients instanceof HashMap) {
+			for (Entry<String, Object> entry: ((Map<String, Object>) recipients).entrySet()) {
+				parseParametersPatch(requestPostBuilder, entry.getValue(), key+"["+entry.getKey()+"]");
 			}
 		}
 	}
@@ -209,19 +248,18 @@ class RequestHelper {
 	{
 		OkHttpClient client = RequestHelper.defaultClient();
 		
-		Builder requestPostBuilder = new okhttp3.MultipartBody.Builder()
-		.setType(okhttp3.MultipartBody.FORM);
+		okhttp3.FormBody.Builder requestPostBuilder = new okhttp3.FormBody.Builder();
 		
 		if (parameters != null) {
 			for (Entry<String, Object> entry: parameters.entrySet()) {
-				parseParameters(requestPostBuilder, entry.getValue(), entry.getKey());
+				parseParametersPatch(requestPostBuilder, entry.getValue(), entry.getKey());
 			}
 		}
 		
 		RequestBody requestBody = null;
 		
 		if (parameters == null) {
-			requestPostBuilder.addFormDataPart("", "");
+			requestPostBuilder.addEncoded("", "");
 			requestBody = requestPostBuilder.build();
 		} else {
 			requestBody = requestPostBuilder.build();
