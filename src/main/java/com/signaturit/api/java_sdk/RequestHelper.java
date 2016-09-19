@@ -21,7 +21,7 @@ class RequestHelper {
 	/**
 	 * User agent
 	 */
-	public static final String USER_AGENT = "signaturit-java-sdk 1.0.9" ;
+	public static final String USER_AGENT = "signaturit-java-sdk 1.0.10" ;
 	
 	/**
 	 * 
@@ -37,21 +37,27 @@ class RequestHelper {
 	protected static String putGetParamsToUrl(String route, Map<String, Object> parameters)
 	{
 		if (parameters != null) {
-			for (Entry<String, Object>  entry : parameters.entrySet()) {
-				StringBuilder routeBuilder = new StringBuilder();
-			    if (entry.getKey().equals("ids")) {
-			    	
+			StringBuilder routeBuilder = new StringBuilder();
+			
+			for (Entry<String, Object>  entry : parameters.entrySet()) {	
+				if (entry.getKey().equals("ids")) {
+					
+					routeBuilder.append("&ids=");
+					
 			    	String delim="";
+
 			    	for (CharSequence i : (CharSequence[]) entry.getValue()) {
 			    		routeBuilder.append(delim).append(i);
+
 			    		delim = ",";
 			    	}
+			    } else {
+					routeBuilder.append(
+						String.format("&%s=%s", entry.getKey(), entry.getValue())
+					);
 			    }
-			    
-			    route += String.format(
-			    	"&%s=%s", entry.getKey(), routeBuilder.toString()
-			    );
 			}
+			route += routeBuilder.toString();
 		}
 		return route;
 	}

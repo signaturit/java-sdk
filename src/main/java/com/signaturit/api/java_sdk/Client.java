@@ -130,7 +130,7 @@ public class Client {
 	 */
 	public Response getSignatures(int limit, int offset) throws IOException 
 	{
-		String route = String.format("signatures.json?limit=%doffset=%d", limit, offset);
+		String route = String.format("signatures.json?limit=%d&offset=%d", limit, offset);
 		
 		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
@@ -160,7 +160,7 @@ public class Client {
 	 */
 	public Response getSignatures(int limit, int offset, Map<String, Object> parameters) throws IOException 
 	{
-		String route = String.format("signatures.json?limit=%doffset=%d", limit, offset);
+		String route = String.format("signatures.json?limit=%d&offset=%d", limit, offset);
 		
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
 		
@@ -370,7 +370,7 @@ public class Client {
 	 */
 	public Response getEmails(int limit, int offset) throws IOException 
 	{
-		String route = String.format("emails.json?limit=%doffset=%d", limit, offset);
+		String route = String.format("emails.json?limit=%d&offset=%d", limit, offset);
 		
 		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
@@ -399,7 +399,7 @@ public class Client {
 	 */
 	public Response getEmails(int limit, int offset, Map<String, Object> parameters) throws IOException 
 	{
-		String route = String.format("emails.json?limit=%doffset=%d", limit, offset);
+		String route = String.format("emails.json?limit=%d&offset=%d", limit, offset);
 		
 		route = RequestHelper.putGetParamsToUrl(route, parameters);
 		return RequestHelper.requestGet(this.url + route, this.accessToken);
