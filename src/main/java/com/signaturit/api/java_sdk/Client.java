@@ -1,7 +1,9 @@
 package com.signaturit.api.java_sdk;
 
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -556,5 +558,280 @@ public class Client {
 			"emails/%s/certificates/%s/download/audit_trail", emailId, certificateId
 		);
 		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	//Contacts
+	
+	public Response getContacts() throws IOException
+	{
+		String route = String.format("contacts.json");
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response getContact(String contactId) throws IOException
+	{
+		String route = String.format("contacts/%s.json", contactId);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response updateContact(String contactId, String email, String name) throws IOException
+	{
+		String route = String.format("contacts/%s.json", contactId);
+		
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		
+		if (email != null) {
+			parameters.put("email", email);
+		}
+		
+		if (name != null) {
+			parameters.put("name", name);
+		}
+				
+		return RequestHelper.requestPatch(this.url + route, this.accessToken, parameters);
+	}
+	
+	public Response deleteContact(String contactId) throws IOException
+	{
+		String route = String.format("contacts/%s.json", contactId);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response createContact(String email, String name) throws IOException
+	{
+		String route = String.format("contacts.json");
+		
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		
+		parameters.put("email", email);
+		parameters.put("name", name);
+		
+		return RequestHelper.requestPost(this.url + route, this.accessToken, parameters, null);
+	}
+	
+	//packages
+	
+	public Response getPackages() throws IOException
+	{
+		String route = String.format("packages.json");
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response getPackage(String packageId) throws IOException
+	{
+		String route = String.format("packages/%s.json", packageId);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public InputStream downloadPackageAuditTrail(String packageId) throws IOException
+	{
+		String route = String.format("packages/%s/download/audit_trail", packageId);
+		return RequestHelper.requestGetFile(this.url + route, this.accessToken);
+	}
+	
+	//TO-DO
+	public Response createSignaturePackage()
+	{
+		return null;
+	}
+	
+	//Team
+	
+	public Response getTeam() throws IOException
+	{
+		String route = String.format("team.json");
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response getUsers() throws IOException
+	{
+		String route = String.format("team/users.json");
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response getUser(String userId) throws IOException
+	{
+		String route = String.format("team/users/%s.json", userId);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response removeUser(String userId) throws IOException
+	{
+		String route = String.format("team/users/%s.json", userId);
+		return RequestHelper.requestDelete(this.url + route, this.accessToken);
+	}
+	
+	public Response getSeats() throws IOException
+	{
+		String route = String.format("team/seats.json");
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response getSeat(String seatId) throws IOException
+	{
+		String route = String.format("team/seats/%s,json", seatId);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response removeSeat(String seatId) throws IOException
+	{
+		String route = String.format("team/seats/%s,json", seatId);
+		return RequestHelper.requestDelete(this.url + route, this.accessToken);
+	}
+	
+	public Response inviteUser(String email, String role) throws IOException
+	{
+		String route = String.format("team/users.json");
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("email", email);
+		parameters.put("role", role);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, parameters, null);
+	}
+	
+	public Response changeUseRole(String userId, String role) throws IOException
+	{
+		String route = String.format("team/users/%s.json", userId);
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("rote", role);
+		return RequestHelper.requestPatch(this.url + route, this.accessToken, parameters);
+	}
+	
+	public Response getGroups() throws IOException
+	{
+		String route = String.format("team/groups.json");
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response getGroup(String groupId) throws IOException
+	{
+		String route = String.format("team/groups/%s.json", groupId);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response deleteGroup(String groupId) throws IOException
+	{
+		String route = String.format("team/groups/%s.json", groupId);
+		return RequestHelper.requestDelete(this.url + route, this.accessToken);
+	}
+	
+	public Response createGroup(String name) throws IOException
+	{
+		String route = String.format("team/groups.json");
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("name", name);
+		return RequestHelper.requestPost(route, this.accessToken, parameters, null);
+	}
+	
+	public Response updateGroup(String groupId, String name) throws IOException
+	{
+		String route = String.format("team/groups/%s.json");
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("name", name);
+		return RequestHelper.requestPatch(route, this.accessToken, parameters);
+	}
+	
+	public Response addMemberToGroup(String groupId, String userId) throws IOException
+	{
+		String route = String.format("team/groups/%s/members/%s.json", groupId, userId);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, null, null);
+	}
+	
+	public Response removeMemberToGroup(String groupId, String userId) throws IOException
+	{
+		String route = String.format("team/groups/%s/members/%s.json", groupId, userId);
+		return RequestHelper.requestDelete(this.url + route, this.accessToken);
+	}
+	
+	public Response addManagerToGroup(String groupId, String userId) throws IOException
+	{
+		String route = String.format("team/groups/%s/managers/%s.json", groupId, userId);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, null, null);
+	}
+	
+	public Response removeManagerToGroup(String groupId, String userId) throws IOException
+	{
+		String route = String.format("team/groups/%s/managers/%s.json", groupId, userId);
+		return RequestHelper.requestDelete(this.url + route, this.accessToken);
+	}
+	
+	//Subscriptions
+	public Response getSubscriptions() throws IOException
+	{
+		String route = String.format("subscriptions.json");
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response getSubscription(String subscriptionId) throws IOException
+	{
+		String route = String.format("subscriptions/%s.json", subscriptionId);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response createSubscription(String url , String[] events) throws IOException
+	{
+		String route = String.format("subscriptions.json");
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("url", url);
+		parameters.put("events", events);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, parameters, null);
+	}
+	
+	public Response updateSubscription(String subscriptionId, String url, String[] events) throws IOException
+	{
+		String route = String.format("subscriptions/%s.json", subscriptionId);
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		
+		if (url != null) {
+			parameters.put("url", url);			
+		}
+	
+		if (events != null) {
+			parameters.put("events", events);			
+		}
+		
+		return RequestHelper.requestPatch(this.url + route, this.accessToken, parameters);
+	}
+	
+	public Response deleteSubscription(String subscriptionId) throws IOException
+	{
+		String route = String.format("subscriptions/%s.json", subscriptionId);
+		return RequestHelper.requestDelete(this.url + route, this.accessToken);
+	}
+	
+	//certified email
+	public Response getSms() throws IOException
+	{
+		String route = String.format("sms.json");
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response getSingleSms(String smsId) throws IOException
+	{
+		String route = String.format("sms/%s.json", smsId);
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	public Response createSms(
+			ArrayList<File> files, 
+			ArrayList<HashMap<String, Object>> recipients, 
+			String body, 
+			HashMap<String, Object> parameters) throws IOException
+	{
+		String route = String.format("sms.json");
+		
+		if (parameters == null) {
+			parameters = new HashMap<String, Object>();
+		}
+		
+		parameters.put("body", body);
+		parameters.put("recipients", recipients);
+		
+		return RequestHelper.requestPost(this.url + route, this.accessToken, parameters, files);
+	}
+	
+	public InputStream downloadSmsAuditTrail(String smsId, String certificateId) throws IOException
+	{
+		String route = String.format("sms/%s/certificates/%s/download/audit_trail", smsId, certificateId);
+		return RequestHelper.requestGetFile(this.url + route, this.accessToken);
 	}
 }

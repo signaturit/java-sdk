@@ -21,7 +21,7 @@ class RequestHelper {
 	/**
 	 * User agent
 	 */
-	public static final String USER_AGENT = "signaturit-java-sdk 1.0.10" ;
+	public static final String USER_AGENT = "signaturit-java-sdk 1.0.11" ;
 	
 	/**
 	 * 
@@ -203,12 +203,35 @@ class RequestHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	protected static Response requestGet(String route,String token) throws IOException 
+	protected static Response requestGet(String route, String token) throws IOException 
 	{
 		OkHttpClient client = RequestHelper.defaultClient();
 		
 		Request request = new Request.Builder()
 				.get()
+				.addHeader("Authorization", token)
+				.addHeader("user-agent", RequestHelper.USER_AGENT)
+				.url(route)
+				.build();
+		
+		Response response = client.newCall(request).execute();
+		
+		return response;
+	}
+	
+	/**
+	 * 
+	 * @param route
+	 * @param token
+	 * @return
+	 * @throws IOException
+	 */
+	protected static Response requestDelete(String route, String token) throws IOException
+	{
+		OkHttpClient client = RequestHelper.defaultClient();
+		
+		Request request = new Request.Builder()
+				.delete()
 				.addHeader("Authorization", token)
 				.addHeader("user-agent", RequestHelper.USER_AGENT)
 				.url(route)
