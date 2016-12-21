@@ -799,13 +799,13 @@ public class Client {
 	}
 	
 	//certified email
-	public Response getSms() throws IOException
+	public Response getSMS() throws IOException
 	{
 		String route = String.format("sms.json");
 		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
-	public Response getSingleSms(String smsId) throws IOException
+	public Response getSingleSMS(String smsId) throws IOException
 	{
 		String route = String.format("sms/%s.json", smsId);
 		return RequestHelper.requestGet(this.url + route, this.accessToken);
@@ -816,7 +816,7 @@ public class Client {
 	 * @return
 	 * @throws IOException 
 	 */
-	public Response countSms() throws IOException 
+	public Response countSMS() throws IOException 
 	{
 		String route = "sms/count.json";
 		
@@ -829,14 +829,14 @@ public class Client {
 	 * @return
 	 * @throws IOException
 	 */
-	public Response countSms(Map<String, Object> parameters) throws IOException 
+	public Response countSMS(Map<String, Object> parameters) throws IOException 
 	{
 		String route = RequestHelper.putGetParamsToUrl("sms/count.json?", parameters);
 		
 		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
-	public Response createSms(
+	public Response createSMS(
 			ArrayList<File> files, 
 			ArrayList<HashMap<String, Object>> recipients, 
 			String body, 
