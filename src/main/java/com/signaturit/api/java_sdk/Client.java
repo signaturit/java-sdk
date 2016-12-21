@@ -811,6 +811,31 @@ public class Client {
 		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * @throws IOException 
+	 */
+	public Response countSms() throws IOException 
+	{
+		String route = "sms/count.json";
+		
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
+	/**
+	 * 
+	 * @param parameters
+	 * @return
+	 * @throws IOException
+	 */
+	public Response countSms(Map<String, Object> parameters) throws IOException 
+	{
+		String route = RequestHelper.putGetParamsToUrl("sms/count.json?", parameters);
+		
+		return RequestHelper.requestGet(this.url + route, this.accessToken);
+	}
+	
 	public Response createSms(
 			ArrayList<File> files, 
 			ArrayList<HashMap<String, Object>> recipients, 
