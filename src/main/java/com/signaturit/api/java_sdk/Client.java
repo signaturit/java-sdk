@@ -594,7 +594,7 @@ public class Client {
 	public Response deleteContact(String contactId) throws IOException
 	{
 		String route = String.format("contacts/%s.json", contactId);
-		return RequestHelper.requestGet(this.url + route, this.accessToken);
+		return RequestHelper.requestDelete(this.url + route, this.accessToken);
 	}
 	
 	public Response createContact(String email, String name) throws IOException
@@ -736,7 +736,7 @@ public class Client {
 		return RequestHelper.requestPost(this.url + route, this.accessToken, null, null);
 	}
 	
-	public Response removeMemberToGroup(String groupId, String userId) throws IOException
+	public Response removeMemberFromGroup(String groupId, String userId) throws IOException
 	{
 		String route = String.format("team/groups/%s/members/%s.json", groupId, userId);
 		return RequestHelper.requestDelete(this.url + route, this.accessToken);
@@ -748,7 +748,7 @@ public class Client {
 		return RequestHelper.requestPost(this.url + route, this.accessToken, null, null);
 	}
 	
-	public Response removeManagerToGroup(String groupId, String userId) throws IOException
+	public Response removeManagerFromGroup(String groupId, String userId) throws IOException
 	{
 		String route = String.format("team/groups/%s/managers/%s.json", groupId, userId);
 		return RequestHelper.requestDelete(this.url + route, this.accessToken);
