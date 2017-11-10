@@ -261,7 +261,7 @@ ArrayList<File> files = new ArrayList<File>();
 File fileToEmail = new File("/path/youPdf.pdf");
 files.add(fileToEmail);
 
-client.createEmail(files, recipients);
+client.createEmail(files, recipients, "subject", "body");
 ```
 
 ### Get audit trail document
