@@ -70,7 +70,7 @@ class RequestHelper {
 	 */
 	protected static void parseParameters(Builder bodyBuilder, Object recipients, String key) 
 	{	
-		if (recipients instanceof String || recipients instanceof Integer || recipients instanceof Double) {
+		if (recipients instanceof String || recipients instanceof Integer || recipients instanceof Double || recipients instanceof Float) {
 			bodyBuilder.addFormDataPart(key, recipients.toString());
 		} else if (recipients instanceof int[]) {
 			int[] listArray = (int[]) recipients;
