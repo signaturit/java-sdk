@@ -88,10 +88,8 @@ class RequestHelper {
 			}
 		} else if (recipients instanceof ArrayList<?>) {
 			int i = 0;
-			for ( HashMap<String, Object> recipient: (ArrayList<HashMap<String, Object>>) recipients ) {
-				for (Entry<String, Object>  entry : recipient.entrySet()) {
-					parseParameters(bodyBuilder, entry.getValue(), key+"["+i+"]["+entry.getKey()+"]");
-				}
+			for (Object recipient: (ArrayList<Object>) recipients) {
+				parseParameters(bodyBuilder, recipient, key+"["+i+"]");
 				++i;
 			}
 		} else if (recipients instanceof HashMap) {
