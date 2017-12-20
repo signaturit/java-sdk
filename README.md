@@ -6,14 +6,14 @@ Signaturit JAVA SDK
 =====================
 This package is a JAVA wrapper around the Signaturit API. If you didn't read the documentation yet, maybe it's time to take a look [here](https://docs.signaturit.com/).
 
-You'll need at least JAVA 1.6 to use this package.
+You'll need at least JAVA 1.7 to use this package.
 
 Configuration
 -------------
 
 The recommended way to install the SDK is through [Maven](https://maven.apache.org/).
 
-Add the dependencies to you pom.xml :
+Add the dependencies to your pom.xml :
 ```xml
 <dependency>
   <groupId>com.signaturit.api</groupId>
