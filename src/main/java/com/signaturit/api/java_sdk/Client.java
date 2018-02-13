@@ -667,15 +667,9 @@ public class Client {
 		return RequestHelper.requestGet(this.url + route, this.accessToken);
 	}
 	
-	public Response getSeat(String seatId) throws IOException
-	{
-		String route = String.format("team/seats/%s,json", seatId);
-		return RequestHelper.requestGet(this.url + route, this.accessToken);
-	}
-	
 	public Response removeSeat(String seatId) throws IOException
 	{
-		String route = String.format("team/seats/%s,json", seatId);
+		String route = String.format("team/seats/%s.json", seatId);
 		return RequestHelper.requestDelete(this.url + route, this.accessToken);
 	}
 	
@@ -719,15 +713,15 @@ public class Client {
 		String route = String.format("team/groups.json");
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("name", name);
-		return RequestHelper.requestPost(route, this.accessToken, parameters, null);
+		return RequestHelper.requestPost(this.url + route, this.accessToken, parameters, null);
 	}
 	
 	public Response updateGroup(String groupId, String name) throws IOException
 	{
-		String route = String.format("team/groups/%s.json");
+		String route = String.format("team/groups/%s.json", groupId);
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("name", name);
-		return RequestHelper.requestPatch(route, this.accessToken, parameters);
+		return RequestHelper.requestPatch(this.url + route, this.accessToken, parameters);
 	}
 	
 	public Response addMemberToGroup(String groupId, String userId) throws IOException
