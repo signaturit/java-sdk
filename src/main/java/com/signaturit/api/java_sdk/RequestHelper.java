@@ -3,18 +3,22 @@ package com.signaturit.api.java_sdk;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.MediaType;
+import okhttp3.*;
 import okhttp3.MultipartBody.Builder;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 class RequestHelper {
 
@@ -150,8 +154,9 @@ class RequestHelper {
 	protected static Response requestPost(String route, String token, Map<String, Object> parameters, ArrayList<File> files) 
 			throws IOException 
 	{
+
 		OkHttpClient client = RequestHelper.defaultClient();
-				
+
 		Builder requestPostBuilder = new okhttp3.MultipartBody.Builder()
 		.setType(okhttp3.MultipartBody.FORM);
 		
@@ -304,14 +309,50 @@ class RequestHelper {
 		return response;
 	}
 	
-	private static OkHttpClient defaultClient() 
+	private static OkHttpClient defaultClient() throws IOException
 	{
+
+		TLSSocketFactory socketFactory = null;
+		try {
+			socketFactory = new TLSSocketFactory();
+		} catch (KeyManagementException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		OkHttpClient client = new OkHttpClient.Builder()
-				.connectTimeout(RequestHelper.timeout,TimeUnit.SECONDS)
-				.writeTimeout(RequestHelper.timeout, TimeUnit.SECONDS)
-				.readTimeout(RequestHelper.timeout, TimeUnit.SECONDS)
-				.build();
+					.connectTimeout(RequestHelper.timeout,TimeUnit.SECONDS)
+					.writeTimeout(RequestHelper.timeout, TimeUnit.SECONDS)
+					.readTimeout(RequestHelper.timeout, TimeUnit.SECONDS)
+					.sslSocketFactory(socketFactory, getTrustManager())
+					.build();
+			return client;
+
+
 		
-		return client;
+
+	}
+
+	private static X509TrustManager getTrustManager() {
+		TrustManagerFactory trustManagerFactory = null;
+		try {
+			trustManagerFactory =
+					TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+			trustManagerFactory.init((KeyStore) null);
+
+			TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+			if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+				//throw new IllegalStateException(
+				//    "Unexpected default trust managers:" + Arrays.toString(trustManagers));
+				return null;
+			}
+			return (X509TrustManager) trustManagers[0];
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return null;
+		} catch (KeyStoreException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
