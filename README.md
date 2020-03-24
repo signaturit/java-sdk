@@ -1,3 +1,5 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=signaturit_java-sdk&metric=alert_status&token=20b737b75f8308736304a2843f66f40a5768e11e)](https://sonarcloud.io/dashboard?id=signaturit_java-sdk)
+
 =========================================
 DO NOT USE MASTER BRANCH
 ========================

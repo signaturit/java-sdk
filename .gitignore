@@ -1,7 +1,8 @@
 .DS_Store
 .classpath
 .project
-.settings/
-target/
-.idea/
+.settings
+target
+.idea
+.scannerwork
 java-sdk.iml
