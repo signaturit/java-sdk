@@ -30,7 +30,7 @@ class RequestHelper {
 	/**
 	 * 
 	 */
-	public static final int timeout = 30;
+	public static final int timeout = 60;
 	
 	/**
 	 * 
