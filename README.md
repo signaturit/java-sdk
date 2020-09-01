@@ -40,7 +40,7 @@ Client client = new Client("YOUR_ACCESS_TOKEN");
 Please note that by default the client will use our sandbox API. When you are ready to start using the production environment just get the correct access token and pass an additional argument to the constructor:
 
 ```java
-SignaturitClient client = new SignaturitClient("YOUR_ACCESS_TOKEN", true);
+Client client = new Client("YOUR_ACCESS_TOKEN", true);
 ```
 All Client's methods will return a object of Response class.
 
