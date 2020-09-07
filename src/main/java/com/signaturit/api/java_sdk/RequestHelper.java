@@ -25,7 +25,7 @@ class RequestHelper {
 	/**
 	 * User agent
 	 */
-	public static final String USER_AGENT = "signaturit-java-sdk 1.1.0" ;
+	public static final String USER_AGENT = "signaturit-java-sdk 1.1.8" ;
 	
 	/**
 	 * 
