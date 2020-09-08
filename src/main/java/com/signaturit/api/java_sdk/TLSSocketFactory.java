@@ -1,29 +1,29 @@
 package com.signaturit.api.java_sdk;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-
 
 public class TLSSocketFactory extends SSLSocketFactory {
 
-    private SSLSocketFactory internalSSLSocketFactory;
-    private SSLContext internal_context;
+    private final SSLSocketFactory internalSSLSocketFactory;
+    private final SSLContext internalContext;
+
+    private final String tlsVersion = "TLSv1.2";
 
     public TLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
-        internal_context = SSLContext.getInstance("TLS");
-        internal_context.init(null, null, null);
-        internalSSLSocketFactory = internal_context.getSocketFactory();
+        internalContext = SSLContext.getInstance(tlsVersion);
+        internalContext.init(null, null, null);
+        internalSSLSocketFactory = internalContext.getSocketFactory();
     }
 
     @Override
@@ -42,12 +42,12 @@ public class TLSSocketFactory extends SSLSocketFactory {
     }
 
     @Override
-    public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+    public Socket createSocket(String host, int port) throws IOException {
         return enableTLSOnSocket(internalSSLSocketFactory.createSocket(host, port));
     }
 
     @Override
-    public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException {
+    public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException {
         return enableTLSOnSocket(internalSSLSocketFactory.createSocket(host, port, localHost, localPort));
     }
 
@@ -62,17 +62,16 @@ public class TLSSocketFactory extends SSLSocketFactory {
     }
 
     private Socket enableTLSOnSocket(Socket socket) {
-        String [] cypherList = getCipherList();
+        String[] cypherList = getCipherList();
 
-        if(socket != null && (socket instanceof SSLSocket)) {
-            ((SSLSocket)socket).setEnabledProtocols(new String[] {"TLSv1.2"});
-            ((SSLSocket)socket).setEnabledCipherSuites(cypherList);
+        if (socket instanceof SSLSocket) {
+            ((SSLSocket) socket).setEnabledProtocols(new String[]{tlsVersion});
+            ((SSLSocket) socket).setEnabledCipherSuites(cypherList);
         }
         return socket;
     }
 
-    protected String[] getCipherList()
-    {
+    protected String[] getCipherList() {
         String[] preferredCiphers = {
                 "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
                 "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
@@ -85,17 +84,14 @@ public class TLSSocketFactory extends SSLSocketFactory {
                 "TLS_RSA_WITH_AES_256_GCM_SHA384"
         };
 
-        String[] availableCiphers = null;
+        String[] availableCiphers;
 
-        try
-        {
-            SSLSocketFactory factory = internal_context.getSocketFactory();
+        try {
+            SSLSocketFactory factory = internalContext.getSocketFactory();
             availableCiphers = factory.getSupportedCipherSuites();
             Arrays.sort(availableCiphers);
-        }
-        catch(Exception e)
-        {
-            return new String[] {
+        } catch (Exception e) {
+            return new String[]{
                     "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
                     "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
                     "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
@@ -118,11 +114,13 @@ public class TLSSocketFactory extends SSLSocketFactory {
         }
 
         List<String> aa = new ArrayList<String>();
-        for(int i = 0; i < preferredCiphers.length; i++)
-        {
-            int idx = Arrays.binarySearch(availableCiphers, preferredCiphers[i]);
-            if(idx >= 0)
-                aa.add(preferredCiphers[i]);
+
+        for (String preferredCipher : preferredCiphers) {
+            int idx = Arrays.binarySearch(availableCiphers, preferredCipher);
+
+            if (idx >= 0) {
+                aa.add(preferredCipher);
+            }
         }
 
         aa.add("TLS_EMPTY_RENEGOTIATION_INFO_SCSV");
