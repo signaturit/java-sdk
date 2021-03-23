@@ -20,14 +20,14 @@ Add the dependencies to your pom.xml :
 <dependency>
   <groupId>com.signaturit.api</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
 </dependency>
 ```
 
 or [Gradle](http://gradle.org/).
 
 ```json
-compile 'com.signaturit.api:java-sdk:1.2.0'
+compile 'com.signaturit.api:java-sdk:1.2.1'
 ```
 
 Then import the library and instantiate the

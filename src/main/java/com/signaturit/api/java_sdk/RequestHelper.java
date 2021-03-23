@@ -24,7 +24,7 @@ class RequestHelper {
     /**
      * User agent
      */
-    public static final String USER_AGENT = "signaturit-java-sdk 1.2.0";
+    public static final String USER_AGENT = "signaturit-java-sdk 1.2.1";
 
     /**
      * Request time out
