@@ -29,7 +29,7 @@ class RequestHelper {
     /**
      * Request time out
      */
-    public static final int TIMEOUT = 60;
+    public static final int TIMEOUT = 120;
 
     protected static String putGetParamsToUrl(String route, Map<String, Object> parameters) {
         if (parameters != null) {
