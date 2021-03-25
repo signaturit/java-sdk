@@ -24,12 +24,12 @@ class RequestHelper {
     /**
      * User agent
      */
-    public static final String USER_AGENT = "signaturit-java-sdk 1.2.0";
+    public static final String USER_AGENT = "signaturit-java-sdk 1.2.1";
 
     /**
      * Request time out
      */
-    public static final int TIMEOUT = 60;
+    public static final int TIMEOUT = 120;
 
     protected static String putGetParamsToUrl(String route, Map<String, Object> parameters) {
         if (parameters != null) {
